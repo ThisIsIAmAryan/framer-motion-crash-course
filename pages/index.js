@@ -7,11 +7,13 @@ import ScanningButton from "../components/ScanningButton";
 import { MouseTrail } from "../components/MouseTrail";
 import LegacyComponent from "../components/LegacyComponent";
 import RandomImageComponent from "../components/RandomImageComponent";
+import NewAnimation from "../components/NewAnimation";
 
 export default function Home() {
   return (
     <div>
-      <RandomImageComponent/>
+      <NewAnimation/>
+      {/* <RandomImageComponent/> */}
       {/* <LegacyComponent/> */}
       {/* <MouseTrail/> */}
       {/* <BasicsOfMotion /> */}
