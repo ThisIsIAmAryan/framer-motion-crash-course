@@ -21,16 +21,16 @@ export default function NewAnimation() {
   ];
 
   const [currentSet, setCurrentSet] = useState(0); // Track which set is visible
-  const [fade, setFade] = useState(true); // Control fade-in/fade-out
+  const [fadeOut, setFadeOut] = useState(false); // Control fade-out state
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setFade(false); // Start fading out
+      setFadeOut(true); // Start fading out
       setTimeout(() => {
         setCurrentSet((prevSet) => (prevSet + 1) % imageSets.length); // Change the image set
-        setFade(true); // Fade in the new set
-      }, 500); // Wait for fade-out to complete before switching set
-    }, 2500); // Change the set every 2.5 seconds
+        setFadeOut(false); // Reset fade-out state for next transition
+      }, 1500); // Wait for 1.5 seconds for fade-out to complete before switching set
+    }, 4000); // Change the set every 4 seconds (2.5s visible + 1.5s fade out)
 
     return () => clearInterval(timer); // Cleanup interval
   }, []);
@@ -52,30 +52,35 @@ export default function NewAnimation() {
         FuturePreneurs 10.0
       </div>
 
-      {images.map((image, index) => (
-        <div
-          key={index}
-          style={{
-            position: 'absolute',
-            top: image.top,
-            left: image.left,
-            width: '20vw', // Image size
-            height: '20vw',
-            maxWidth: '200px',
-            maxHeight: '200px',
-            transition: 'opacity 0.5s ease', // Smooth transition for opacity
-            opacity: imageSets[currentSet].includes(index) && fade ? 1 : 0, // Fade in/out based on state
-          }}
-        >
-          <Image
-            src={image.src}
-            alt={`Image ${index + 1}`}
-            layout="fill"
-            objectFit="cover"
-            priority
-          />
-        </div>
-      ))}
+      {images.map((image, index) => {
+        const isFadingOut = fadeOut && !imageSets[currentSet].includes(index);
+        const isFadingIn = !fadeOut && imageSets[currentSet].includes(index);
+        
+        return (
+          <div
+            key={index}
+            style={{
+              position: 'absolute',
+              top: image.top,
+              left: image.left,
+              width: '20vw', // Image size
+              height: '20vw',
+              maxWidth: '200px',
+              maxHeight: '200px',
+              transition: 'opacity 1s ease', // Smooth transition for opacity
+              opacity: isFadingIn ? 1 : (isFadingOut ? 0 : (imageSets[currentSet].includes(index) ? 1 : 0)), // Manage opacity
+            }}
+          >
+            <Image
+              src={image.src}
+              alt={`Image ${index + 1}`}
+              layout="fill"
+              objectFit="cover"
+              priority
+            />
+          </div>
+        );
+      })}
     </div>
   );
 }
